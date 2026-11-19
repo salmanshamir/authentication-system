@@ -1,0 +1,11 @@
+<img
+    src="{% if user.profile_image %}
+        {{ url_for('static', filename='uploads/profiles/' + user.profile_image) }}
+    {% else %}
+        {{ url_for('static', filename='images/default-avatar.png') }}
+    {% endif %}"
+    alt="Profile Picture"
+>
+
+
+

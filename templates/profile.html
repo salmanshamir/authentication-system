@@ -1,0 +1,190 @@
+
+{% extends "base.html" %}
+
+{% block title %}My Profile | AuthSystem {% endblock %}
+
+{% block content %}
+
+<div class="profile-container">
+
+    <!-- Profile Header -->
+    <div class="profile-header">
+        <h1>Account Settings</h1>
+        <p>Manage your profile information and account security.</p>
+    </div>
+
+    <!-- Profile Information -->
+    <section class="profile-card">
+
+
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash-message flash-{{ category }}">
+                            <span class="flash-icon">
+                                {% if category == 'success' %}
+                                    ✓
+                                {% elif category == 'error' %}
+                                    !
+                                {% elif category == 'warning' %}
+                                    ⚠
+                                {% else %}
+                                    i
+                                {% endif %}
+                            </span>
+
+                            <p>{{ message }}</p>
+
+                            <button type="button"
+                                    class="flash-close"
+                                    onclick="this.parentElement.remove()">
+                                &times;
+                            </button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <div class="section-heading">
+            <h2>Profile Information</h2>
+            <p>Your personal account details</p>
+        </div>
+
+        <form action="{{ url_for('upload_profile_image') }}" method="POST" enctype="multipart/form-data">
+
+            <div class="profile-image-section">
+
+                <label for="profile-image" class="profile-image-label">
+
+                    <img
+                    id="profile-preview"
+                        src="{% if user.profile_image %}
+                            {{ url_for('static', filename='uploads/profiles/' + user.profile_image) }}
+                        {% else %}
+                            {{ url_for('static', filename='images/default-avatar.png') }}
+                        {% endif %}"
+                        alt="Profile Picture"
+                    >
+
+
+                    <span class="upload-icon">+</span>
+
+                </label>
+
+                <input
+                    type="file"
+                    name="profile_image"
+                    id="profile-image"
+                    accept="image/*"
+                    hidden
+                >
+
+                <div class="image-info">
+                    <h3>Profile Picture</h3>
+                    <p>Click the image to upload a new picture.</p>
+                    <small>JPG, PNG or WEBP recommended.</small>
+                </div>
+
+            </div>
+
+<div class="profile-details">
+
+    <div class="detail-group">
+        <label for="username">Username</label>
+
+        <input
+            type="text"
+            id="username"
+            name="username"
+            value="{{ session.get('name', 'User') }}"
+        >
+    </div>
+
+</div>
+
+            <button type="submit" class="save-profile-btn">
+                Save Profile Picture
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- Change Password -->
+    <section class="profile-card password-card">
+
+        <div class="section-heading">
+            <h2>Change Password</h2>
+            <p>Update your password to keep your account secure.</p>
+        </div>
+
+        <form action="{{ url_for("change_password") }}" method="POST">
+
+            <div class="form-group">
+                <label for="current-password">Current Password</label>
+
+                <input
+                    type="password"
+                    id="current-password"
+                    name="current_password"
+                    placeholder="Enter your current password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="new-password">New Password</label>
+
+                <input
+                    type="password"
+                    id="new-password"
+                    name="new_password"
+                    placeholder="Enter your new password"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm New Password</label>
+
+                <input
+                    type="password"
+                    id="confirm-password"
+                    name="confirm_password"
+                    placeholder="Confirm your new password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="change-password-btn">
+                Update Password
+            </button>
+
+        </form>
+
+    </section>
+
+</div>
+
+
+<!-- Image Preview -->
+<script>
+    const imageInput = document.getElementById("profile-image");
+    const imagePreview = document.getElementById("profile-preview");
+
+    imageInput.addEventListener("change", function () {
+
+        const file = this.files[0];
+
+        if (file) {
+            imagePreview.src = URL.createObjectURL(file);
+        }
+
+    });
+</script>
+
+{% endblock %}
